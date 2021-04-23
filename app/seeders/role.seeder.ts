@@ -1,0 +1,19 @@
+import { Role } from "../models/role";
+
+export default function seed() {
+    console.log('Seeding role model...');
+    Role.create({
+        id: 1,
+        name: "user"
+    });
+
+    Role.create({
+        id: 2,
+        name: "moderator"
+    });
+
+    Role.create({
+        id: 3,
+        name: "admin"
+    });
+}
