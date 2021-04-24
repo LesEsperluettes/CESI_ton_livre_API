@@ -6,13 +6,14 @@ import config from '../config/auth.config';
 
 import { Role } from "../models/role";
 import { User } from "../models/user";
+import { Request, Response } from "express";
 
 /**
  * Sign up function
  * @param req 
  * @param res 
  */
-export async function signUp(req: any, res: any) {
+export async function signUp(req: Request, res: Response) {
     // Save User to Database
     try {
         let user = await User.create({
@@ -48,7 +49,7 @@ export async function signUp(req: any, res: any) {
  * @param res 
  * @returns 
  */
-export async function signIn(req: any, res: any) {
+export async function signIn(req: Request, res: Response) {
     try {
         // Retrieve the user from database, send 404 if it doesn't exist
         const user = await User.findOne({
