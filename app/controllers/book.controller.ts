@@ -3,7 +3,7 @@ import { Book } from "../models/book";
 
 export async function getBook(req: Request, res: Response) {
     try {
-        const book = await Book.findByPk(req.body.ISBN);
+        const book = await Book.findOne({where: {ISBN: req.params.ISBN}});
 
         // TODO query OpenLibrary API (+ add tag it)
         if(!book) return res.status(404).send({message: "Book cannot be found"})
@@ -11,6 +11,11 @@ export async function getBook(req: Request, res: Response) {
         // Check if the book is borrowed
         const borrowed = await book.$get('borrow')
 
+        let base64 = '';
+        if(book.CoverImage){
+            base64 = book.CoverImage.toString('base64');
+        }
+        
         res.status(200).send({
             ISBN: book.ISBN,
             title: book.title,
@@ -18,7 +23,7 @@ export async function getBook(req: Request, res: Response) {
             publishers: book.publishers,
             publishedDate: book.publishedDate,
             localisation: book.localisation,
-            CoverImage: book.CoverImage,
+            coverImage: base64,
             available: !borrowed // Available if not borrowed
         });
 
@@ -28,5 +33,5 @@ export async function getBook(req: Request, res: Response) {
 }
 
 export async function createBook(req: Request, res: Response){
-    
+
 }

@@ -39,8 +39,10 @@ app.get("/", (req: any, res: any) => {
 // Advanced routes
 import authRoute from './app/routes/auth.routes';
 import userRoute from './app/routes/user.routes';
+import bookRoute from './app/routes/book.routes';
 authRoute(app);
 userRoute(app);
+bookRoute(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
