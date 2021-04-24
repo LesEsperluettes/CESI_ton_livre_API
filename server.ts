@@ -36,6 +36,12 @@ app.get("/", (req: any, res: any) => {
   res.json({ message: "Welcome to CESI ton livre API." });
 });
 
+// Advanced routes
+import authRoute from './app/routes/auth.routes';
+import userRoute from './app/routes/user.routes';
+authRoute(app);
+userRoute(app);
+
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

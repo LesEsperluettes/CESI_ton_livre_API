@@ -1,6 +1,5 @@
-const db = require("../models");
-const ROLES = db.ROLES;
-const User = db.user;
+import { User } from "../models/user";
+import { Role } from "../models/role";
 
 /**
  * Check if the username or email already exist in database
@@ -50,7 +49,10 @@ let checkDuplicateUsernameOrEmail = async (req: any, res: any, next: any) => {
 let checkRolesExisted = async (req: any, res: any, next: any) => {
     if (req.body.roles) {
         for (let i = 0; i < req.body.roles.length; i++) {
-            if (!ROLES.includes(req.body.roles[i])) {
+            
+            const role = await Role.findOne({where: {name: req.body.roles[i]}})
+
+            if (!role) {
                 res.status(400).send({
                     message: "Failed! Role does not exist = " + req.body.roles[i]
                 });
