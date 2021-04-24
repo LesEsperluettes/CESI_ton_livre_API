@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 if(process.env.PRODUCTION){
-    const seeder = require("./app/models/seeders");
+    const seeder = require("./app/seeders");
 
     sequelize.sync({force: true}).then(() => {
         console.log('Drop, seed and Resync Db');

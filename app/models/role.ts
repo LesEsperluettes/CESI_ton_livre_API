@@ -1,4 +1,4 @@
-import { Table, Column, Model, HasMany, CreatedAt, UpdatedAt, BelongsToMany } from 'sequelize-typescript'
+import { Table, Column, Model, CreatedAt, UpdatedAt, BelongsToMany } from 'sequelize-typescript'
 import {User} from "./user"
 import {UserRole} from "./userRole"
 

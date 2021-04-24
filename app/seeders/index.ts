@@ -1,5 +1,7 @@
 import roleSeeder from "./role.seeder"
+import userSeeder from "./user.seeder"
 
-export function seed(){
-    roleSeeder();
+export async function seed(){
+    await roleSeeder();
+    await userSeeder();
 }
