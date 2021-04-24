@@ -1,5 +1,9 @@
-const jwt = require("jsonwebtoken");
-const config = require("../config/auth.config.js");
+import * as jwt from 'jsonwebtoken';
+import config from '../config/auth.config';
+
+import { User } from '../models/user';
+import { Role } from '../models/role';
+
 
 let verifyToken = (req: any, res: any, next: any) => {
     let token = req.headers["x-access-token"];
@@ -25,16 +29,16 @@ let verifyToken = (req: any, res: any, next: any) => {
 
 // Check if the user is admin
 let isAdmin = async (req: any, res: any, next: any) => {
-    let user = await User.findByPk(req.userId);
-    let roles = await user.getRoles();
+    const user = await User.findByPk(req.userId);
+    let roles = await user?.$get('roles');
 
     // Continue if the user has the admin role
-    for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "admin") {
+    roles?.forEach(role => {
+        if (role.name === "admin") {
             next();
             return;
         }
-    }
+    });
 
     // Send 403 if not an admin
     res.status(403).send({
@@ -46,14 +50,14 @@ let isAdmin = async (req: any, res: any, next: any) => {
 // Check if the user is a moderator
 let isModerator = async (req: any, res: any, next: any) => {
     let user = await User.findByPk(req.userId);
-    let roles = await user.getRoles();
+    let roles = await user?.$get('roles');
 
-    for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "moderator") {
+    roles?.forEach(role => {
+        if (role.name === "moderator") {
             next();
             return;
         }
-    }
+    });
 
     res.status(403).send({
         message: "Require Moderator Role!"
@@ -63,19 +67,16 @@ let isModerator = async (req: any, res: any, next: any) => {
 // Check if the user is a moderator or an admin
 let isModeratorOrAdmin = async (req: any, res: any, next: any) => {
     let user = await User.findByPk(req.userId);
-    let roles = await user.getRoles();
+    let roles = await user?.$get('roles');
 
-    for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "moderator") {
-            next();
-            return;
+    roles?.forEach(role => {
+        switch(role.name){
+            case "admin":
+            case "moderator":
+                next();
+                return;
         }
-
-        if (roles[i].name === "admin") {
-            next();
-            return;
-        }
-    }
+    });
 
     res.status(403).send({
         message: "Require Moderator or Admin Role!"

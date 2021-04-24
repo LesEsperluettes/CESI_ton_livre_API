@@ -68,4 +68,4 @@ const verifySignUp = {
     checkRolesExisted: checkRolesExisted
 };
 
-module.exports = verifySignUp;
+export = verifySignUp;
