@@ -1,7 +1,10 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-require('dotenv').config()
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+
+import 'dotenv/config'
+
+import { sequelize } from "./sequelize";
 
 const app = express();
 
@@ -17,23 +20,19 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const db = require("./app/models");
-
 if(process.env.PRODUCTION){
-    const seeder = require("./app/models/seeders");
+    const seeder = require("./app/seeders");
 
-    db.sequelize.sync({force: true}).then(() => {
+    sequelize.sync({force: true}).then(() => {
         console.log('Drop, seed and Resync Db');
         seeder.seed();
     });
 }else{
-    db.sequelize.sync();
+    sequelize.sync();
 }
 
-
-
 // simple route
-app.get("/", (req, res) => {
+app.get("/", (req: any, res: any) => {
   res.json({ message: "Welcome to CESI ton livre API." });
 });
 

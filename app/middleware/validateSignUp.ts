@@ -8,7 +8,7 @@ const User = db.user;
  * @param {*} res response
  * @param {*} next 
  */
-let checkDuplicateUsernameOrEmail = (req, res, next) => {
+let checkDuplicateUsernameOrEmail = async (req: any, res: any, next: any) => {
     // Username
     let user = await User.findOne({
         where: {
@@ -47,7 +47,7 @@ let checkDuplicateUsernameOrEmail = (req, res, next) => {
  * @param {*} next 
  * @returns 
  */
-let checkRolesExisted = (req, res, next) => {
+let checkRolesExisted = async (req: any, res: any, next: any) => {
     if (req.body.roles) {
         for (let i = 0; i < req.body.roles.length; i++) {
             if (!ROLES.includes(req.body.roles[i])) {
@@ -68,4 +68,4 @@ const verifySignUp = {
     checkRolesExisted: checkRolesExisted
 };
 
-module.exports = verifySignUp;
+export = verifySignUp;
