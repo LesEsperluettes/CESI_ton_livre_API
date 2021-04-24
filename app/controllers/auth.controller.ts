@@ -1,6 +1,6 @@
 import { sign } from "jsonwebtoken";
 import { compareSync, hashSync } from "bcryptjs";
-import { Op } from "sequelize/types";
+import { Op } from "sequelize";
 
 import config from '../config/auth.config';
 
