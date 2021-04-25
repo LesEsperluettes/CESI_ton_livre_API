@@ -6,13 +6,14 @@ import config from '../config/auth.config';
 
 import { Role } from "../models/role";
 import { User } from "../models/user";
+import { Request, Response } from "express";
 
 /**
  * Sign up function
  * @param req 
  * @param res 
  */
-export async function signUp(req: any, res: any) {
+export async function signUp(req: Request, res: Response) {
     // Save User to Database
     try {
         let user = await User.create({
@@ -21,22 +22,9 @@ export async function signUp(req: any, res: any) {
             password: hashSync(req.body.password, 8)
         })
 
-        if (req.body.roles) {
-            let roles = await Role.findAll({
-                where: {
-                    name: {
-                        [Op.or]: req.body.roles
-                    }
-                }
-            })
-
-            await user.$add('roles', roles)
-            res.send({ message: "User was registered successfully!" });
-        } else {
-            // Set user role to "user"
-            await user.$add('roles', 1);
-            res.send({ message: "User was registered successfully!" });
-        }
+        // Set user role to "user"
+        await user.$add('roles', 1);
+        res.send({ message: "User was registered successfully!" });
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
@@ -48,7 +36,7 @@ export async function signUp(req: any, res: any) {
  * @param res 
  * @returns 
  */
-export async function signIn(req: any, res: any) {
+export async function signIn(req: Request, res: Response) {
     try {
         // Retrieve the user from database, send 404 if it doesn't exist
         const user = await User.findOne({

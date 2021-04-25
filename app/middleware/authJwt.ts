@@ -2,8 +2,6 @@ import * as jwt from 'jsonwebtoken';
 import config from '../config/auth.config';
 
 import { User } from '../models/user';
-import { Role } from '../models/role';
-
 
 let verifyToken = (req: any, res: any, next: any) => {
     let token = req.headers["x-access-token"];
@@ -29,7 +27,7 @@ let verifyToken = (req: any, res: any, next: any) => {
 
 // Check if the user is admin
 let isAdmin = async (req: any, res: any, next: any) => {
-    const user = await User.findByPk(req.userId);
+    let user = await User.findByPk(req.userId);
     let roles = await user?.$get('roles');
 
     // Continue if the user has the admin role
@@ -44,7 +42,6 @@ let isAdmin = async (req: any, res: any, next: any) => {
     res.status(403).send({
         message: "Require Admin Role!"
     });
-    return;
 };
 
 // Check if the user is a moderator
@@ -70,11 +67,9 @@ let isModeratorOrAdmin = async (req: any, res: any, next: any) => {
     let roles = await user?.$get('roles');
 
     roles?.forEach(role => {
-        switch(role.name){
-            case "admin":
-            case "moderator":
-                next();
-                return;
+        if (role.name === "moderator" || role.name === "admin") {
+            next();
+            return;
         }
     });
 
