@@ -1,4 +1,4 @@
-import { Table, Model, Column, HasOne, DataType } from "sequelize-typescript";
+import { Table, Model, Column, HasOne, DataType, Unique } from "sequelize-typescript";
 import { Optional } from "sequelize";
 import { Borrow } from "./borrow";
 
@@ -10,13 +10,14 @@ interface BookAttributes {
     publishers: string,
     publishedDate: string,
     localisation: string,
-    CoverImage: Buffer
+    CoverImage?: Buffer
 }
 
 interface BookCreationAttributes extends Optional<BookAttributes, "id"> {}
 
 @Table
 export class Book extends Model<BookAttributes,BookCreationAttributes> {
+    @Unique
     @Column
     ISBN!: string
 

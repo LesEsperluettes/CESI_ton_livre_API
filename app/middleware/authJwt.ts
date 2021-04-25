@@ -3,6 +3,7 @@ import config from '../config/auth.config';
 
 import { User } from '../models/user';
 import { Role } from '../models/role';
+import { NextFunction, Request, Response } from 'express';
 
 
 let verifyToken = (req: any, res: any, next: any) => {
@@ -28,23 +29,25 @@ let verifyToken = (req: any, res: any, next: any) => {
 };
 
 // Check if the user is admin
-let isAdmin = async (req: any, res: any, next: any) => {
-    const user = await User.findByPk(req.userId);
+let isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    const user = await User.findByPk(req.body.userId);
     let roles = await user?.$get('roles');
 
     // Continue if the user has the admin role
     roles?.forEach(role => {
+        console.log('isAdmin : '+(role.name === "admin"))
         if (role.name === "admin") {
-            next();
-            return;
+
+            return next();
         }
     });
+
+    console.log('test')
 
     // Send 403 if not an admin
     res.status(403).send({
         message: "Require Admin Role!"
     });
-    return;
 };
 
 // Check if the user is a moderator
@@ -70,11 +73,9 @@ let isModeratorOrAdmin = async (req: any, res: any, next: any) => {
     let roles = await user?.$get('roles');
 
     roles?.forEach(role => {
-        switch(role.name){
-            case "admin":
-            case "moderator":
-                next();
-                return;
+        if (role.name === "moderator" || role.name === "admin") {
+            next();
+            return;
         }
     });
 

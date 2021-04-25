@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getBook } from "../controllers/book.controller";
+import { createBook, getBook } from "../controllers/book.controller";
 import authJwt from "../middleware/authJwt";
 
 
@@ -17,4 +17,10 @@ export default (app: any) => {
         [authJwt.verifyToken],
         getBook
     );
+
+    app.post(
+        "/api/book",
+        [authJwt.verifyToken, authJwt.isAdmin],
+        createBook
+    )
 }

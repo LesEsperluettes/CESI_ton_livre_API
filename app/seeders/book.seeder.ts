@@ -15,4 +15,14 @@ export default async function seed(){
         localisation: 'Shelf B, Position 45',
         CoverImage : coverBuffer
     })
+
+    await Book.create({
+        id: 2,
+        ISBN: '9780451159274',
+        title: 'IT',
+        authors: 'Stephen King',
+        publishers: 'New American Library',
+        publishedDate : '1987-09',
+        localisation: 'Shelf A, Position 10'
+    })
 }
