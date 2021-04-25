@@ -2,7 +2,19 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 
-import 'dotenv/config'
+import dotenv from 'dotenv';
+import path from 'path';
+
+let envPath = '';
+switch(process.env.ENVIRONMENT){
+  case 'prod':
+  case 'dev': envPath = './.env'; break;
+  case 'test': envPath = './.env.test'; break;
+  default: console.log('ENV ERROR : Please check if the ENVIRONNEMENT variable is configured !'); process.exit(1);
+}
+
+dotenv.config({ path: path.resolve(__dirname, envPath)});
+
 
 import { sequelize } from "./sequelize";
 
@@ -20,14 +32,14 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-if(process.env.PRODUCTION){
+if(process.env.ENVIRONMENT === "dev"){
     const seeder = require("./app/seeders");
 
     sequelize.sync({force: true}).then(() => {
         console.log('Drop, seed and Resync Db');
         seeder.seed();
     });
-}else{
+}else {
     sequelize.sync();
 }
 
