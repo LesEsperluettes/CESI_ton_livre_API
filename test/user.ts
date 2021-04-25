@@ -64,7 +64,7 @@ describe('Users', () => {
     });
 
     /* User */
-    describe('/GET test', () => {
+    describe('Admin /GET test', () => {
         it('it should GET access to the user content ', async () => {
             let result = await chai.request('http://localhost:3000')
                 .get('/test/user')
@@ -86,7 +86,7 @@ describe('Users', () => {
     })
 
     /* Mod */
-    describe('/GET test', () => {
+    describe('Moderator /GET test', () => {
         it('it should GET access to the user content ', async () => {
             let result = await chai.request('http://localhost:3000')
                 .get('/test/user')
@@ -108,7 +108,7 @@ describe('Users', () => {
     })
 
     /* Admin */
-    describe('/GET test', () => {
+    describe('Admin /GET test', () => {
         it('it should GET access to the user content ', async () => {
             let result = await chai.request('http://localhost:3000')
                 .get('/test/user')
