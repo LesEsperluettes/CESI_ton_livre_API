@@ -20,7 +20,7 @@ export default (app: any) => {
 
     app.get(
         "/test/mod",
-        [authJwt.verifyToken, authJwt.isModerator],
+        [authJwt.verifyToken, authJwt.isModeratorOrAdmin],
         moderatorBoard
     );
 

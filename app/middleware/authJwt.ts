@@ -29,20 +29,17 @@ let verifyToken = (req: any, res: any, next: any) => {
 };
 
 // Check if the user is admin
-let isAdmin = async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findByPk(req.body.userId);
+let isAdmin = async (req: any, res: any, next: any) => {
+    let user = await User.findByPk(req.userId);
     let roles = await user?.$get('roles');
 
     // Continue if the user has the admin role
     roles?.forEach(role => {
-        console.log('isAdmin : '+(role.name === "admin"))
         if (role.name === "admin") {
-
-            return next();
+            next();
+            return;
         }
     });
-
-    console.log('test')
 
     // Send 403 if not an admin
     res.status(403).send({

@@ -14,7 +14,6 @@ import { Request, Response } from "express";
  * @param res 
  */
 export async function signUp(req: Request, res: Response) {
-    console.log('/auth/signup')
     // Save User to Database
     try {
         let user = await User.create({
