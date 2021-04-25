@@ -14,6 +14,7 @@ import { Request, Response } from "express";
  * @param res 
  */
 export async function signUp(req: Request, res: Response) {
+    console.log('/auth/signup')
     // Save User to Database
     try {
         let user = await User.create({
@@ -22,22 +23,9 @@ export async function signUp(req: Request, res: Response) {
             password: hashSync(req.body.password, 8)
         })
 
-        if (req.body.roles) {
-            let roles = await Role.findAll({
-                where: {
-                    name: {
-                        [Op.or]: req.body.roles
-                    }
-                }
-            })
-
-            await user.$add('roles', roles)
-            res.send({ message: "User was registered successfully!" });
-        } else {
-            // Set user role to "user"
-            await user.$add('roles', 1);
-            res.send({ message: "User was registered successfully!" });
-        }
+        // Set user role to "user"
+        await user.$add('roles', 1);
+        res.send({ message: "User was registered successfully!" });
     } catch (error) {
         res.status(500).send({ message: error.message });
     }

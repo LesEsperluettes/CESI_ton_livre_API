@@ -32,7 +32,7 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-if(process.env.ENVIRONMENT === "dev"){
+if(process.env.ENVIRONMENT === "dev" || process.env.ENVIRONMENT === "test"){
     const seeder = require("./app/seeders");
 
     sequelize.sync({force: true}).then(() => {
@@ -61,3 +61,5 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+export default app;
