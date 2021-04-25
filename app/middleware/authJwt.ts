@@ -2,9 +2,6 @@ import * as jwt from 'jsonwebtoken';
 import config from '../config/auth.config';
 
 import { User } from '../models/user';
-import { Role } from '../models/role';
-import { NextFunction, Request, Response } from 'express';
-
 
 let verifyToken = (req: any, res: any, next: any) => {
     let token = req.headers["x-access-token"];

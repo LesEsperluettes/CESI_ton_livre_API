@@ -1,10 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import { createBook, getBook } from "../controllers/book.controller";
 import authJwt from "../middleware/authJwt";
-
+import { createBook, getBook } from "../controllers/book.controller";
 
 export default (app: any) => {
-    app.use(function (req: Request, res: Response, next: NextFunction) {
+    app.use(function (req: any, res: any, next: any) {
         res.header(
             "Access-Control-Allow-Headers",
             "x-access-token, Origin, Content-Type, Accept"
@@ -13,14 +11,14 @@ export default (app: any) => {
     });
 
     app.get(
-        "/api/book/:ISBN",
+        "/book/:ISBN",
         [authJwt.verifyToken],
         getBook
     );
 
     app.post(
-        "/api/book",
-        [authJwt.verifyToken, authJwt.isAdmin],
+        "/book",
+        [authJwt.verifyToken],
         createBook
     )
 }
