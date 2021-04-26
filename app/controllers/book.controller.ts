@@ -4,35 +4,64 @@ import * as fs from "fs/promises";
 
 import { File, Form, Part } from 'multiparty';
 
+async function getBooksInfos(book: Book) {
+    const borrowed = await book.$get('borrow')
+
+    let base64 = '';
+    if (book.CoverImage) {
+        base64 = book.CoverImage.toString('base64');
+    } else {
+        // Send default image if database is not populated
+        base64 = await fs.readFile(__dirname + "/../../static/assets/img/default.png", { encoding: 'base64' });
+    }
+
+    return {
+        ISBN: book.ISBN,
+        title: book.title,
+        authors: book.authors,
+        publishers: book.publishers,
+        publishedDate: book.publishedDate,
+        localisation: book.localisation,
+        coverImage: base64,
+        available: !borrowed // Available if not borrowed
+    };
+}
+
 export async function getBook(req: Request, res: Response) {
+    console.log('[Route] GET /book')
     try {
         const book = await Book.findOne({ where: { ISBN: req.params.ISBN } });
 
         // TODO query OpenLibrary API (+ add tag it)
         if (!book) return res.status(404).send({ message: "Book cannot be found" })
 
-        // Check if the book is borrowed
-        const borrowed = await book.$get('borrow')
+        return getBooksInfos(book);
 
-        let base64 = '';
-        if (book.CoverImage) {
-            base64 = book.CoverImage.toString('base64');
-        } else {
-            // Send default image if database is not populated
-            base64 = await fs.readFile(__dirname + "/../../static/assets/img/default.png", { encoding: 'base64' });
-        }
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+/**
+ * GET /books
+ * @param req 
+ * @param res 
+ */
+export async function getBooks(req: Request, res: Response) {
+    console.log('[Route] GET /books')
+    try {
+        const books = await Book.findAll();
+
+        if (!books) return res.status(404).send({ message: "Books cannot be found" });
+
+        let result: any = []
+        books.forEach((book) => {
+            result.push(getBooksInfos(book))
+        })
 
         res.status(200).send({
-            ISBN: book.ISBN,
-            title: book.title,
-            authors: book.authors,
-            publishers: book.publishers,
-            publishedDate: book.publishedDate,
-            localisation: book.localisation,
-            coverImage: base64,
-            available: !borrowed // Available if not borrowed
+            books: result
         });
-
     } catch (error) {
         res.status(500).send({ message: error.message });
     }

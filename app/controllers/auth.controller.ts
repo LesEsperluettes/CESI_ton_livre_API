@@ -1,12 +1,13 @@
-import { sign } from "jsonwebtoken";
+import { decode, sign, verify } from "jsonwebtoken";
 import { compareSync, hashSync } from "bcryptjs";
 import { Op } from "sequelize";
 
 import config from '../config/auth.config';
 
 import { Role } from "../models/role";
-import { User } from "../models/user";
 import { Request, Response } from "express";
+import { Console } from "node:console";
+import { User } from "../models/user";
 
 /**
  * Sign up function
@@ -14,6 +15,7 @@ import { Request, Response } from "express";
  * @param res 
  */
 export async function signUp(req: Request, res: Response) {
+    console.log('[Route] POST /auth/signup')
     // Save User to Database
     try {
         let user = await User.create({
@@ -26,6 +28,7 @@ export async function signUp(req: Request, res: Response) {
         await user.$add('roles', 1);
         res.send({ message: "User was registered successfully!" });
     } catch (error) {
+        console.log('[ERROR] POST /auth/signup : '+ error.message)
         res.status(500).send({ message: error.message });
     }
 }
@@ -37,6 +40,7 @@ export async function signUp(req: Request, res: Response) {
  * @returns 
  */
 export async function signIn(req: Request, res: Response) {
+    console.log('[Route] POST /auth/signin')
     try {
         // Retrieve the user from database, send 404 if it doesn't exist
         const user = await User.findOne({
@@ -81,5 +85,24 @@ export async function signIn(req: Request, res: Response) {
         });
     } catch (error) {
         res.status(500).send({ message: error.message });
+    }
+}
+
+/**
+ * POST /auth/validate
+ * @param req 
+ * @param res 
+ */
+export async function validateToken(req: Request, res: Response){
+    console.log('[Route] POST /auth/validate')
+    try {
+        let decoded: any = await verify(req.body.token,config.secret);
+        
+        let user = await User.findByPk(decoded.id)
+        if(!user) return res.status(404).send({message : "Token invalid"});
+        
+        res.status(200).send({message : "Token still valid"});
+    }catch(error){
+        res.status(440).send({message : "Auth token expired, please re-login"});
     }
 }

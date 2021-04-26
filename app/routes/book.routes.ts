@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authJwt";
-import { createBook, getBook } from "../controllers/book.controller";
+import { createBook, getBook, getBooks } from "../controllers/book.controller";
 
 export default (app: any) => {
     app.use(function (req: any, res: any, next: any) {
@@ -14,6 +14,12 @@ export default (app: any) => {
         "/book/:ISBN",
         [authJwt.verifyToken],
         getBook
+    );
+
+    app.get(
+        "/books",
+        [authJwt.verifyToken],
+        getBooks
     );
 
     app.post(

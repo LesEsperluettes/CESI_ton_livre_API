@@ -1,5 +1,5 @@
 import verifySignUp from "../middleware/validateSignUp";
-import { signIn, signUp } from "../controllers/auth.controller";
+import { signIn, signUp, validateToken } from "../controllers/auth.controller";
 
 export default (app: any) => {
     app.use(function (req: any, res: any, next: any) {
@@ -20,4 +20,6 @@ export default (app: any) => {
     );
 
     app.post("/auth/signin", signIn);
+
+    app.post("/auth/validate", validateToken)
 }

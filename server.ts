@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 let envPath = '';
 switch (process.env.ENVIRONMENT) {
+  case 'db':
   case 'prod':
   case 'dev': envPath = './.env'; break;
   case 'test': envPath = './.env.test'; break;
@@ -34,14 +35,15 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-if (process.env.ENVIRONMENT === "dev") {
+if (process.env.ENVIRONMENT === "db") {
   const seeder = require("./app/seeders");
 
-  sequelize.sync({ force: true }).then(() => {
-    console.log('Drop, seed and Resync Db');
-    seeder.seed();
+  sequelize.sync({ force: true }).then(async () => {
+    console.log('[DB GENERATE] Drop, seed and Resync Db');
+    await seeder.seed();
+    console.log('[DB GENERATE] Done')
+    process.exit(0);
   });
-  
 } else {
   sequelize.sync();
 }
