@@ -35,7 +35,7 @@ export async function getBook(req: Request, res: Response) {
         // TODO query OpenLibrary API (+ add tag it)
         if (!book) return res.status(404).send({ message: "Book cannot be found" })
 
-        return getBooksInfos(book);
+        return await getBooksInfos(book);
 
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -55,13 +55,16 @@ export async function getBooks(req: Request, res: Response) {
         if (!books) return res.status(404).send({ message: "Books cannot be found" });
 
         let result: any = []
-        books.forEach((book) => {
-            result.push(getBooksInfos(book))
-        })
-
-        res.status(200).send({
-            books: result
-        });
+        const addResult = async (books: any, result: any) => {
+            for(let i=0; i<books.length;i++){
+                let info = await getBooksInfos(books[i])
+                result.push(info)
+            }
+            return;
+        }
+        await addResult(books,result);
+        
+        res.status(200).send(result);
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
