@@ -1,5 +1,5 @@
 import authJwt from "../middleware/authJwt";
-import { createBook, getBook, getBooks } from "../controllers/book.controller";
+import { getBookBorrow, getBorrow, getUserBorrows, postBorrow } from "../controllers/borrow.controller";
 
 export default (app: any) => {
     app.use(function (req: any, res: any, next: any) {
@@ -10,21 +10,27 @@ export default (app: any) => {
         next();
     });
 
-    app.get(
-        "/book/:ISBN",
-        [authJwt.verifyToken],
-        getBook
-    );
-
-    app.get(
-        "/books",
-        [authJwt.verifyToken],
-        getBooks
-    );
-
     app.post(
-        "/book",
+        "/borrow",
         [authJwt.verifyToken],
-        createBook
+        postBorrow
+    )
+
+    app.get(
+        "/borrow/:id",
+        [authJwt.verifyToken],
+        getBorrow
+    )
+
+    app.get(
+        "/borrow/book/:ISBN",
+        [authJwt.verifyToken],
+        getBookBorrow
+    )
+
+    app.get(
+        "/borrow/user/:id",
+        [authJwt.verifyToken],
+        getUserBorrows
     )
 }
